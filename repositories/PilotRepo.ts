@@ -9,14 +9,11 @@ export const obtenerPilotos = function (): Promise<Data[]> {
             inner join employee e on p.employee_number = e.employee_number
             inner join person pe on e.id_person = pe.id_person
         `).then(res => {
-            console.log(res);
-            return res.rows?.map((row) => {
-                console.log(row);
-                return ({
-                    id: row.at(0),
-                    name: row.at(1)
-                });
-            }) as Data[];
+            console.log(res)
+            return res.rows?.map((row) => ({
+                id: row[0],
+                name: row[1]
+            })) as Data[]
         })
     );
 }
@@ -29,7 +26,7 @@ export const obtenerNombrePilotoById = function (pilotLicense: string): Promise<
             inner join employee e on p.employee_number = e.employee_number
             inner join person pe on e.id_person = pe.id_person
             where p.pilot_license = :pl
-        `, [pilotLicense]).then(res => `${res.rows?.at(0)?.at(0)}`)
+        `, [pilotLicense]).then(res => `${res.rows && res.rows[0][0]}`)
     );
 }
 
@@ -39,5 +36,5 @@ export const obtenerNombrePilotoByFlightSegment = async function (flightSegment:
         select pilot_license from pilot_assignment where consec_fs = :cfs
     `, [flightSegment]);
 
-    return obtenerNombrePilotoById(`${pilotLicense.rows?.at(0)?.at(0)}`);
+    return obtenerNombrePilotoById(`${pilotLicense.rows && pilotLicense.rows[0][0]}`);
 }

@@ -7,8 +7,8 @@ export const obtenerAerolineas = function (): Promise<Data[]> {
         cursor.execute<string[]>(`
             select airline_code, airline_name from airline
         `).then(res => res.rows?.map(row => ({
-            id: row.at(0),
-            name: row.at(1)
+            id: row[0],
+            name: row[1]
         })) as Data[])
     );
 }
@@ -21,7 +21,7 @@ export const obtenerConsecutivoAerolineaById = function (airlineCode: string): P
                 case when max(flight_number) is null then 0
                 else max(flight_number) end
             ) numero from flight where airline_code = :ac
-        `, [airlineCode]).then(res => `${Number(res.rows?.at(0)?.at(0)) + 1}`)
+        `, [airlineCode]).then(res => `${Number(res.rows && res.rows[0][0]) + 1}`)
     );
 }
 
@@ -30,7 +30,7 @@ export const obtenerVuelosAerolineaById = function (airlineCode: string): Promis
     return (
         cursor.execute<number[]>(`
             select flight_number from flight where airline_code = :ac
-        `, [airlineCode]).then(res => res.rows?.map(row => `${row.at(0)}`) as string[])
+        `, [airlineCode]).then(res => res.rows?.map(row => `${row[0]}`) as string[])
     );
 }
 
@@ -91,6 +91,6 @@ export const obtenerNombreAerolineaById = function (airlineCode: string): Promis
     return (
         cursor.execute<string[]>(`
             select airline_name from airline where airline_code = :ac
-        `, [airlineCode]).then(res => `${res.rows?.at(0)?.at(0)}`)
+        `, [airlineCode]).then(res => `${res.rows && res.rows[0][0]}`)
     );
 }

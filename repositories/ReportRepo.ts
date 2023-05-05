@@ -23,9 +23,9 @@ const realizarReporte = async function (data: {
         flight: `${data.airlineCode}${data.flightNumber}`,
         pilot,
         date: data.flightDate,
-        city: places.at(0),
-        division: places.at(1),
-        country: places.at(2)
+        city: places[0],
+        division: places[1],
+        country: places[2]
     }
 
     return report;
@@ -39,16 +39,15 @@ const realizarItinerario = async function (data: {
 }): Promise<Itinerario[][]> {
     const itinerariosTotal: Itinerario[][] = [];
     const itinerarios: Itinerario[] = [];
-    const airlineCode = data.segment.at(0) as string;
-    const flightNumber = data.segment.at(1) as unknown as number;
+    const airlineCode = data.segment[0] as string;
+    const flightNumber = data.segment[1] as unknown as number;
     const flightDate = data.query.fechaViaje;
     let airportCodeOrig = data.airportCodeOrig;
 
     do {
-        const segmentDest = (await obtenerSegmentoByVuelo(airlineCode, flightNumber, airportCodeOrig))
-            .at(0) as string[];
-        const consecFsDest = segmentDest?.at(0) as unknown as number;
-        const airportCodeDest = segmentDest?.at(1) as string;
+        const segmentDest = (await obtenerSegmentoByVuelo(airlineCode, flightNumber, airportCodeOrig))[0] as string[];
+        const consecFsDest = segmentDest[0] as unknown as number;
+        const airportCodeDest = segmentDest[1] as string;
 
         const reporteVueloOrigen = await realizarReporte({
             airlineCode,
@@ -82,10 +81,10 @@ const realizarItinerario = async function (data: {
             }): Promise<Itinerario[][]> {
                 const itinerariosConexion: Itinerario[][] = [];
                 for (const conexion of dataConnection.connections) {
-                    const consecFs2 = conexion.at(0) as unknown as number;
-                    const airlineCode2 = conexion.at(1) as string;
-                    const flightNumber2 = conexion.at(2) as string;
-                    const airportCodeOrig2 = conexion.at(3) as string;
+                    const consecFs2 = conexion[0] as unknown as number;
+                    const airlineCode2 = conexion[1] as string;
+                    const flightNumber2 = conexion[2] as string;
+                    const airportCodeOrig2 = conexion[3] as string;
 
                     const itinerarioConexion = await realizarItinerario({
                         segment: [airlineCode2, flightNumber2],
@@ -104,9 +103,10 @@ const realizarItinerario = async function (data: {
                         });
 
                         itinerariosConexion.push(...itinerarioConexion.map(itinerario => {
+                            const reportes = itinerario[0].reports || [];
                             itinerario.unshift({
                                 type: 'Conexión',
-                                reports: [reporteVuelo, itinerario.at(0)?.reports?.at(0) as Report]
+                                reports: [reporteVuelo, reportes[0]  as Report]
                             });
 
                             return itinerario;

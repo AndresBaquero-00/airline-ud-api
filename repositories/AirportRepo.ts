@@ -7,8 +7,8 @@ export const obtenerAeropuertos = function (): Promise<Data[]> {
         cursor.execute<string[]>(`
             select airport_code, airport_name from airport
         `).then(res => res.rows?.map(row => ({
-            id: row.at(0),
-            name: row.at(1)
+            id: row[0],
+            name: row[1]
         })) as Data[])
     )
 }
@@ -21,8 +21,8 @@ export const obtenerAeropuertosByVuelo = function (airlineCode: string, flightNu
             inner join airport a on fs.airport_code_dest = a.airport_code
             where fs.flight_number = :fn and fs.airline_code = :ac
         `, [Number(flightNumber), airlineCode]).then(res => res.rows?.map(row => ({
-            id: row.at(0),
-            name: row.at(1)
+            id: row[0],
+            name: row[1]
         })) as Data[])
     );
 }
@@ -32,7 +32,7 @@ export const obtenerNombreAeropuertoById = function (airportCode: string): Promi
     return (
         cursor.execute<string[]>(`
             select airport_name from airport where airport_code = :ac
-        `, [airportCode]).then(res => `${res.rows?.at(0)?.at(0)}`)
+        `, [airportCode]).then(res => `${res.rows && res.rows[0][0]}`)
     );
 }
 
@@ -46,11 +46,11 @@ export const obtenerLugarAeropuertoById = function (airportCode: string): Promis
                 select id_place from airport where airport_code = :ac
             ) connect by p.id_place = prior p.id_place_cont
         `, [airportCode]).then(res => res.rows?.map(place => {
-            const name = place?.at(0);
-            const type = place?.at(1);
+            const name = place[0];
+            const type = place[0];
             return {
                 name,
-                type: type?.at(0)?.concat(type.substring(1).toLowerCase())
+                type: type[0]?.concat(type.substring(1).toLowerCase())
             }
         }) as Place[])
     );
