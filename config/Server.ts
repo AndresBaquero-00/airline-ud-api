@@ -1,8 +1,9 @@
 import express, { Application } from "express";
+import dotenv from "dotenv";
 
 export class Server {
     private app: Application;
-    private port: number = 3000;
+    private port: number = 0;
 
     public constructor() {
         this.app = express();
@@ -17,7 +18,10 @@ export class Server {
     }
 
     public start(): void {
-        this.app.listen(this.port, '0.0.0.0', function () {
+        // Cargar variables de entorno.
+        dotenv.config();
+        this.port = parseInt(process.env['app.port'] || '0');
+        this.app.listen(this.port, process.env['app.host'] || '', function () {
             console.log('Servidor iniciado correctamente.');
         });
     }
