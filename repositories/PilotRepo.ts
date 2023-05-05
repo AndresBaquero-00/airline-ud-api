@@ -8,10 +8,13 @@ export const obtenerPilotos = function (): Promise<Data[]> {
             select p.pilot_license, pe.name_person from pilot p
             inner join employee e on p.employee_number = e.employee_number
             inner join person pe on e.id_person = pe.id_person
-        `).then(res => res.rows?.map((row) => ({
-            id: row.at(0),
-            name: row.at(1)
-        })) as Data[])
+        `).then(res => {
+            console.log(res)
+            return res.rows?.map((row) => ({
+                id: row.at(0),
+                name: row.at(1)
+            })) as Data[]
+        })
     );
 }
 
