@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 export class Server {
     private app: Application;
     private port: number = 0;
+    private host: string = '';
 
     public constructor() {
         this.app = express();
@@ -21,7 +22,8 @@ export class Server {
         // Cargar variables de entorno.
         dotenv.config();
         this.port = parseInt(process.env['app.port'] || '0');
-        this.app.listen(this.port, process.env['app.host'] || '', function () {
+        this.host = process.env['app.host'] || '';
+        this.app.listen(this.port, this.host, () => {
             console.log('Servidor iniciado correctamente.');
         });
     }
