@@ -9,11 +9,14 @@ export const obtenerPilotos = function (): Promise<Data[]> {
             inner join employee e on p.employee_number = e.employee_number
             inner join person pe on e.id_person = pe.id_person
         `).then(res => {
-            console.log(res)
-            return res.rows?.map((row) => ({
-                id: row.at(0),
-                name: row.at(1)
-            })) as Data[]
+            console.log(res);
+            return res.rows?.map((row) => {
+                console.log(row);
+                return ({
+                    id: row.at(0),
+                    name: row.at(1)
+                });
+            }) as Data[];
         })
     );
 }
