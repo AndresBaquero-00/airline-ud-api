@@ -9,7 +9,6 @@ export const obtenerPilotos = function (): Promise<Data[]> {
             inner join employee e on p.employee_number = e.employee_number
             inner join person pe on e.id_person = pe.id_person
         `).then(res => {
-            console.log(res)
             return res.rows?.map((row) => ({
                 id: row[0],
                 name: row[1]
